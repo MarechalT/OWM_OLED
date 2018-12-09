@@ -8,7 +8,7 @@ char* getHumanTime(const char* timestamp){
   char buf[20];
   // Format time, "ddd yyyy-mm-dd hh:mm:ss zzz"
   date = localtime(&ts);
-  strftime(buf, sizeof(buf), "%c", date);
+  strftime(buf, sizeof(buf), "%R", date);
   return buf;
 }
 

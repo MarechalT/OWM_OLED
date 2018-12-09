@@ -23,4 +23,13 @@ void setupDisplay(){
   display.clearDisplay();
 }
 
+void displayAllLines(String &line1, String &line2, String &line3, String &line4){
+    display.clearDisplay();
+    display.setCursor(0, 0);
+    display.print(line1);
+    display.print(line2);
+    display.print(line3);
+    display.print(line4);
+    display.display();
+}
 #endif
