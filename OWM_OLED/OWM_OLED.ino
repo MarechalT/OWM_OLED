@@ -18,8 +18,9 @@
 String line1, line2, line3, line4;
 String reception;
 
-void setup() {
 
+void setup() {
+  //Serial.begin(115200); //Debug only
   // set I2C pins (2 for SDA and 0 for SCL)
   Wire.begin(2, 0);
 
@@ -83,10 +84,23 @@ void loop() {
     const char* weather = root["weather"][0]["main"];
     line4 = "Weather: ";    line4 += weather;
 
+    int type;
+    Serial.println(weather);
+    if (!strcmp(weather, "Clear")) {
+      type = weatherType::sun;
+    }
+    else if (!strcmp(weather, "Clouds"))
+      type = weatherType::cloud;
+    else if (!strcmp(weather, "Rain"))
+      type = weatherType::rain;
+    else if (!strcmp(weather, "Snow"))
+      type = weatherType::snow;
+    else
+      type = weatherType::Max;
+
     //Write on oled
-    //Available data for ["weather"][0]["main"] -> "Clear", "Clouds", "Rain" or "Snow"
-    //Todo draw a Symbol for cloud, clear sky, or rain/snow.
-    displayAllLines(line1, line2, line3, line4);
+    displayWeather1(type,line1,line2,line3,line4);
+    displayWeather2(type,line1,line2,line3,line4);
   }
   digitalWrite(2, HIGH);
   delay(500);
