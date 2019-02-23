@@ -11,7 +11,6 @@ Adafruit_SSD1306 display(OLED_RESET);
 #error("Height incorrect, please fix Adafruit_SSD1306.h!");
 #endif
 
-#define IMAGE_DELAY 1500
 enum weatherType {
   rain = 0,
   cloud,
@@ -184,7 +183,6 @@ void displayAllLines(String &line1, String &line2, String &line3, String &line4)
   display.print(line3);
   display.print(line4);
   display.display();
-  delay(IMAGE_DELAY);
 }
 
 
@@ -202,7 +200,6 @@ void testDisplays() {
   display.clearDisplay();
   display.drawBitmap(0, 0, SNOW, 128, 32, 1);
   display.display();
-  delay(1500);
 }
 
 void displayWeather(int type) {
@@ -224,12 +221,13 @@ void displayWeather(int type) {
       break;
   }
   display.display();
-  delay(IMAGE_DELAY);
 }
 
-void displayWeather1(int type,String line1,String line2, String line3, String line4){
-    displayWeather(type);
+void displayWeather1(String line1,String line2, String line3, String line4){
     displayAllLines(line1, line2, line3, line4);
+}
+void displayWeatherType(int type){
+    displayWeather(type);
 }
 void displayWeather2(int type,String line1,String line2, String line3, String line4){
     // Draw with size 2 : 7°C|9m/s|Image
