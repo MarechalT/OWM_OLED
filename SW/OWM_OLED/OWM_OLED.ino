@@ -15,7 +15,7 @@
 #include "wifiSettings.h"
 
 #define DELAY 10000
-#define imageDelay 5000
+#define imageDelay 3000
 #define errorDelay 1000
 String reception;
 const unsigned int tryMax = 10;
@@ -65,11 +65,11 @@ void disconnectWifi() {
 void displayValues(const JsonObject &root) {
   String line1, line2, line3, line4;
   line1 = "\n";
-  const double temp = root["main"]["temp"];
+  const double temp = root["list"][1]["main"]["temp"];
   line2 = "Temp : ";    line2 += temp;    line2 += " C\n";
-  const double wind = root["wind"]["speed"];
+  const double wind = root["list"][1]["wind"]["speed"];
   line3 = "Wind : ";    line3 += wind;    line3 += "m/s\n";
-  const char* weather = root["weather"][0]["main"];
+  const char* weather = root["list"][1]["weather"][0]["main"];
   line4 = "Weather: ";    line4 += weather;
 
   int type;
@@ -124,6 +124,7 @@ void loop() {
   reception = client.readStringUntil('\n');
   if (reception != "HTTP/1.1 200 OK\r") {
     display.print("Unexpected answer...");
+    Serial.println("Unexpected answer...");
     delay(errorDelay);
     client.stop();
     disconnectWifi();
