@@ -21,16 +21,15 @@ String reception;
 const unsigned int tryMax = 10;
 
 void setup() {
-  Serial.begin(115200); //Debug only
-  Serial.println("Starting program...");
   // set I2C pins (2 for SDA and 0 for SCL)
   Wire.begin(2, 0);
   //setup the OLED
   setupDisplay();
+  WiFi.mode(WIFI_STA);
+//  wifi_set_sleep_type(LIGHT_SLEEP_T);
 }
 
 bool connectWifi() {
-  Serial.println("Connecting to Wifi.");
   WiFi.begin(wifi_ssid, wifi_password);
   display.clearDisplay();
   display.setCursor(0, 0);
@@ -55,7 +54,6 @@ void printWifiAddress() {
 }
 
 void disconnectWifi() {
-  Serial.println("Disconnecting the Wifi.");
   display.clearDisplay();
   display.setCursor(0, 0);
   display.print("Stopping all connections \n");
@@ -73,7 +71,6 @@ void displayValues(const JsonObject &root) {
   line4 = "Weather: ";    line4 += weather;
 
   int type;
-  Serial.println(weather);
   if (!strcmp(weather, "Clear"))
     type = weatherType::sun;
   else if (!strcmp(weather, "Clouds"))
@@ -89,6 +86,7 @@ void displayValues(const JsonObject &root) {
   int i = 0;
   while (i < 360) {
     displayWeatherType(type);
+    
     delay(imageDelay);
     displayWeather1(line1, line2, line3, line4);
     delay(imageDelay);
@@ -105,7 +103,6 @@ void loop() {
       disconnectWifi();
     }
   }
-  Serial.println("Connected to WiFi.");
 
   // Use WiFiClientSecure class to create TLS connection
   WiFiClientSecure client;
@@ -117,20 +114,17 @@ void loop() {
     disconnectWifi();
     return;
   }
-  Serial.println("Connected to API.");
 
   //Send a request
   client.print(String("GET ") + param + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "User-Agent: ESP8266\r\n" + "Connection: close\r\n\r\n");
   reception = client.readStringUntil('\n');
   if (reception != "HTTP/1.1 200 OK\r") {
     display.print("Unexpected answer...");
-    Serial.println("Unexpected answer...");
     delay(errorDelay);
     client.stop();
     disconnectWifi();
     return;
   }
-    Serial.println("Received Data from API.");
 
   //Received a valid answer
   if (client.find("\r\n\r\n")) {
